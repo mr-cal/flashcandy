@@ -67,11 +67,13 @@ repo's docroot wrapper would create a confusing `src/src/...` path).
    pulled, Caddy restarted, `flashcandy.us` reachable over HTTP on the VPS via
    `curl --resolve` (TLS cert can't issue yet until DNS is cut over).
 
-7. **Cut over DNS** — update the `flashcandy.us` A (and AAAA, if desired) record
-   from `162.0.212.2` to `167.99.14.211` / the VPS's IPv6 address. **Blocked:
-   registrar credentials for `flashcandy.us` (dns1/dns2.registrar-servers.com) are
-   not in `.env.llm` — need those before this step, or you flip the record
-   manually.**
+7. **Cut over DNS** — done. Instead of changing the A record directly at
+   Namecheap, the domain's nameservers were switched to DigitalOcean's
+   (`ns1/ns2/ns3.digitalocean.com`), matching the pattern already used for
+   `eggcalculator.com` and `pcbisolation.com`. This required creating a new DNS
+   zone for `flashcandy.us` in DigitalOcean (via `DIGITAL_OCEAN_API_KEY`) with
+   apex `A`/`AAAA` records pointing at the VPS and a `www` `CNAME` — no
+   registrar credentials were needed after all.
 
 8. **Verify post-cutover**: confirm Let's Encrypt issues a cert for
    `flashcandy.us`/`www.flashcandy.us`, all pages load, images render, and the
